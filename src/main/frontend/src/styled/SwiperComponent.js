@@ -1,14 +1,6 @@
 import {styled} from "styled-components";
 import {Swiper, SwiperSlide} from "swiper/react";
-import {BsChatDots, BsSend} from "react-icons/bs";
-import {useCallback, useContext, useEffect, useMemo, useState} from "react";
-import moment from 'moment';
 import 'moment/locale/ko';
-import diaryApi from "../../api/DiaryApi";
-import UserStore, {UserContext} from "../../context/UserStore";
-import {WebSocket} from "../../App";
-import {Stomp} from "@stomp/stompjs";
-import SockJS from 'sockjs-client';
 
 export const DiarySwipe = styled(Swiper)`
   position: absolute;
@@ -142,7 +134,7 @@ export const CommentBox = styled.div`
 
   img {
     max-width: 45px;
-    @media (max-width: 390px) {
+    @media (max-width: 768px) {
       max-width: 37px;
     }
   }
@@ -174,7 +166,7 @@ export const CommentBox = styled.div`
     padding-right: 45px;
     @media (max-width: 768px) {
       height: 27px;
-      width: 260px;
+      width: 225px;
       margin: 4px 6px;
       padding-right: 35px;
     }
@@ -235,7 +227,7 @@ export const CommentBox = styled.div`
     border-radius: 10px;
   }
 `
-const CommentDetail = styled.div`
+export const CommentDetail = styled.div`
   width: 100%;
   padding: 5px;
   background-color: white;
@@ -251,11 +243,15 @@ const CommentDetail = styled.div`
     max-width: 100%;
     margin-left: 5px;
     font-size: .8rem;
+    @media (max-width: 768px) {
+      width: 220px;
+    }
   }
 
   .subtitle {
     display: flex;
     font-size: .8rem;
+    padding-left: 5px;
   }
 
   .time {
@@ -268,6 +264,8 @@ const CommentDetail = styled.div`
     width: 390px;
     white-space: normal;
     font-size: .6rem;
+    margin-top: 5px;
+    padding-left: 5px;
     @media (max-width: 768px) {
       width: 220px;
     }
@@ -283,175 +281,7 @@ const CommentDetail = styled.div`
     color: #00b4d8;
   }
 `;
-export const Comment = (props) => {
-  // const webSocketService = useContext(WebSocket);
-  const [text, setText] = useState("");
 
-  // const endPoint = "http://localhost:8111/ws";
-  // const stompClient = Stomp.over(new SockJS(endPoint));
-  // const token = localStorage.getItem("authToken");
-  // const header = {
-  //   headers : {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': `Bearer ${token}`
-  //   }
-  // };
-
-  // stompClient.connect(header, function (frame) {
-  //   console.log("connected: " + frame);
-  //   console.log("연결 테스트")
-  // });
-
-  // function Send(request) {
-    
-  //   stompClient.send("/sendnoti", {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${token}`
-  //     }
-  //   }, JSON.stringify(request));
-  // }
-
-
-  const onChangeComment = (e) => {
-    setText(e.target.value);
-  }
-  const commentSend = async () => {
-    const request = {
-      diary: props.diary,
-      comment: text
-    }
-    
-    await diaryApi.sendComment(request);
-    await diaryApi.sendcommentNoti(request);
-    // async function executeFunctionsSequentially() {
-    //   await diaryApi.sendComment(request);
-    
-    //   // 0.2초(200ms) 지연 실행
-    //   await new Promise((resolve) => setTimeout(resolve, 200));
-    
-    //   await diaryApi.sendcommentNoti(request);
-    // }
-    
-    // // 함수 실행
-    // executeFunctionsSequentially();
-    // Send(request);
-    await setText("");
-    await props.setCount(props.count + 1);
-    console.log(request);
-  }
-
-  const BlockBubbling = (e) => {
-    e.stopPropagation();
-  }
-  // 시간 포맷팅 하는 함수
-  const timeData = (timeString) => {
-    moment.locale('ko');
-    return moment(timeString).format('YYYY년 MM월 DD일 A h시 mm분');
-  };
-
-
-  const deleteComment = async (e) => {
-    await diaryApi.deleteComment(e.id);
-    window.location.replace("/diary/detail/" + props.diary);
-  }
-
-  
-
-
-  // => 댓글 수정하는 법인데 할게 너무 많아서 일단 킵
-  //
-  // const [upComm, setUpComm] = useState(0);
-  //
-  // function updateComment() {
-  //   if (upComm === 0) setUpComm(1);
-  //   else setUpComm(0);
-  // }
-  //
-  // const [updateText, setUpText] = useState("");
-  // function onChangeUpText (e) {
-  //   setUpText(e.target.value);
-  // }
-  // function done(e) {
-  //   const comment = {
-  //     comment: e.id,
-  //     content: updateText
-  //   }
-  //   diaryApi.updateComment(comment);
-  //   setUpComm(0);
-  // }
-
-  const [array, setArray] = useState(null);
-
-  useEffect(() => {
-    setArray(props.commentList.filter(e => e.customer !== null))
-    console.log(props.commentList)
-  }, [props]);
-
-
-  return (
-    <CommentBox onClick={(event) => BlockBubbling(event)}>
-
-      {/* 유저 댓글 작성 칸*/}
-      <div className="input">
-        <div className="profile">
-          <img src={props.customer.profilePic}/>
-        </div>
-        <input type="text" id="comment" value={text} onChange={onChangeComment}/>
-        <button className="btn-send">
-          <BsSend className="send" onClick={() => commentSend()}/>
-        </button>
-      </div>
-
-      <hr/>
-      {/* 구분선 */}
-
-      <p className="caption">댓글 {array != null ? array.length : 0}</p>
-
-      {/* 댓글 목록 */}
-      <div className="content">
-        {/* 댓글 낱개 디자인 */}
-        {array && array.map(e => (
-          !e.delete && <CommentDetail key={e.id}>
-          <div className="profile">
-            {/*<img src={`${process.env.PUBLIC_URL}/public_assets/default_avatar.png`}/>*/}
-            <img src={e.customer.profilePic}/>
-          </div>
-          <div className="comment-info">
-            <div className="subtitle">
-              <span className="name">{e.customer.nickName}</span>
-              <div className="delete">
-                <span className="time">{timeData(e.joinDate)}</span>
-
-                {/*{upComm === 0 ?*/}
-                {/*  <>*/}
-                    {/*<span className="update" onClick={updateComment}>수정</span>*/}
-                    {/*/*/}
-                    <span className="update" onClick={()=>deleteComment(e)}>삭제</span>
-                {/*  </>*/}
-                {/*  :*/}
-                {/*  <span className="update" onClick={()=>done(e)}>완료</span>*/}
-                {/*}*/}
-              </div>
-            </div>
-            {/*{upComm === 0 ?*/}
-              <>
-                <span className="comment">
-                {e.content}
-                </span>
-              </>
-            {/*  :*/}
-            {/*  <>*/}
-            {/*    <textarea value={updateText} onChange={onChangeUpText}></textarea>*/}
-            {/*  </>*/}
-            {/*}*/}
-          </div>
-
-        </CommentDetail>))}
-      </div>
-
-    </CommentBox>)
-};
 
 export const Thumbs = styled.button`
   position: absolute;
@@ -496,10 +326,10 @@ export const BackBtn = styled.button`
     color: white;
     font-size: 30px;
     @media(max-width: 768px) {
-      
+
     }
   }
-  
+
   @media (max-width: 768px) {
     width: 40px;
     height: 40px;

@@ -1,12 +1,13 @@
 import {A11y, Navigation, Pagination, Scrollbar} from "swiper";
 import 'swiper/swiper.css'
-import {useEffect, useState} from "react";
-import * as SC from "./SwiperComponent"
+import {useCallback, useEffect, useMemo, useState} from "react";
+import * as SC from "../../styled/SwiperComponent"
 import {BsChatDots, BsArrowLeftCircle} from "react-icons/bs";
 import {FaRegThumbsUp, FaThumbsUp} from "react-icons/fa";
 import {useParams} from "react-router-dom";
 import diaryApi from "../../api/DiaryApi";
 import CustomerApi from "../../api/CustomerApi";
+import {Comment} from "./Comment";
 
 export const DiarySwiper = () => {
   const {id} = useParams();
@@ -22,7 +23,7 @@ export const DiarySwiper = () => {
   const [comment, setComment] = useState([]);
   const [count, setCount] = useState(0);
 
-  const DiaryInit = async () => {
+  const DiaryInit = useCallback( async () => {
     let res = await diaryApi.findDiary(id);
     await setDiary(res.data);
     await setTimeLine(res.data.timeLineList);
@@ -30,7 +31,7 @@ export const DiarySwiper = () => {
     console.log(res.data.commentList);
     console.log(res.data.timeLineList);
     console.log(res.data);
-  }
+  },[id]);
 
   function OpenChat(e) {
     e.stopPropagation();
@@ -104,52 +105,52 @@ export const DiarySwiper = () => {
 
 
   return (
-    <SC.Container onClick={(event) => OverlayMode(event)}>
-      <SC.DiarySwipe
-        // install Swiper modules
-        modules={[Navigation, Pagination, Scrollbar, A11y]}
-        spaceBetween={50}
-        slidesPerView={1}
-        navigation
-        pagination={{clickable: true}}
-        scrollbar={{draggable: true}}
-        onSwiper={(swiper) => console.log(swiper)}
-        onSlideChange={() => console.log('slide change')}
-      >
-        {timeline.map(e => (
-            <SC.TimeLine key={e.id}>
-              {overlay === 1 &&
-                <>
-                  <SC.Overlay>
-                    <SC.DiaryBox>
-                      <span>{diary.title}</span>
-                      <p>{diary.content}</p>
-                    </SC.DiaryBox>
-                    <SC.TimeLineBox>
-                      <span>Flow</span>
-                      <p>{e.content}</p>
-                    </SC.TimeLineBox>
-                  </SC.Overlay>
-                </>
-              }
-              <img src={e.image}/>
-            </SC.TimeLine>
+      <SC.Container onClick={(event) => OverlayMode(event)}>
+        <SC.DiarySwipe
+            // install Swiper modules
+            modules={[Navigation, Pagination, Scrollbar, A11y]}
+            spaceBetween={50}
+            slidesPerView={1}
+            navigation
+            pagination={{clickable: true}}
+            scrollbar={{draggable: true}}
+            onSwiper={(swiper) => console.log(swiper)}
+            onSlideChange={() => console.log('slide change')}
+        >
+          {timeline.map(e => (
+                  <SC.TimeLine key={e.id}>
+                    {overlay === 1 &&
+                        <>
+                          <SC.Overlay>
+                            <SC.DiaryBox>
+                              <span>{diary.title}</span>
+                              <p>{diary.content}</p>
+                            </SC.DiaryBox>
+                            <SC.TimeLineBox>
+                              <span>Flow</span>
+                              <p>{e.content}</p>
+                            </SC.TimeLineBox>
+                          </SC.Overlay>
+                        </>
+                    }
+                    <img src={e.image}/>
+                  </SC.TimeLine>
+              )
           )
-        )
-        }
-      </SC.DiarySwipe>
-      {chatBox === 1 && <SC.Comment diary={id} commentList={comment} count={count} setCount={setCount} customer={customer}/>}
+          }
+        </SC.DiarySwipe>
+        {chatBox === 1 && <Comment diary={id} commentList={comment} count={count} setCount={setCount} customer={customer}/>}
 
-      <SC.Btn onClick={(event) => OpenChat(event)}>
-        <BsChatDots className="comment"/>
-      </SC.Btn>
-      <SC.Thumbs onClick={(event) => ThumbsUp(event)}>
-        {thumbs === 0 ? <FaRegThumbsUp className="thumbs-up"/> : <FaThumbsUp className="thumbs-up"/>}
-      </SC.Thumbs>
-      <SC.BackBtn>
-        <BsArrowLeftCircle className="back-btn" onClick={(e) => pageBack(e)}/>
-      </SC.BackBtn>
+        <SC.Btn onClick={(event) => OpenChat(event)}>
+          <BsChatDots className="comment"/>
+        </SC.Btn>
+        <SC.Thumbs onClick={(event) => ThumbsUp(event)}>
+          {thumbs === 0 ? <FaRegThumbsUp className="thumbs-up"/> : <FaThumbsUp className="thumbs-up"/>}
+        </SC.Thumbs>
+        <SC.BackBtn>
+          <BsArrowLeftCircle className="back-btn" onClick={(e) => pageBack(e)}/>
+        </SC.BackBtn>
 
-    </SC.Container>
+      </SC.Container>
   );
 };

@@ -3,8 +3,8 @@ import SockJS from 'sockjs-client';
 
 
 const token = localStorage.getItem("authToken");
-const endPoint = "http://localhost:8111/ws";
-const stompClient = Stomp.over(new SockJS(endPoint));
+const endPoint = new SockJS("/ws");
+const stompClient = Stomp.over(endPoint);
 const header = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`

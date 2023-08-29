@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const DOMAIN = "";
+const DOMAIN = "http://localhost:8111";
 
 const CustomerApi = {
-    //Get 회원정보 token 으로 가죠오기
+  //Get 회원정보 token 으로 가죠오기
   getCustomerInfo: async (token) => {
     return await axios.get(DOMAIN + "/customer/profile",{
       headers: {
@@ -13,16 +13,27 @@ const CustomerApi = {
     });
   },
 
-  //테이블 아이디 값으로 가져오기 
+  //테이블 아이디 값으로 가져오기
   getCustomerInfoById: async (id) => {
     const token = localStorage.getItem("authToken");
     return await axios.get(DOMAIN + `/customer/profile/${id}`
-    ,{
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    });
+        ,{
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+  },
+
+  getCustomerById: async (id) => {
+    const token = localStorage.getItem("authToken");
+    return await axios.get(DOMAIN + `/customer/${id}`
+        ,{
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
   },
 
   //put 사용자 상테 메시지 수정

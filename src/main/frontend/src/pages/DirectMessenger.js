@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {styled} from "styled-components";
 import {WebSocket} from "../App";
 import {BsSend} from "react-icons/bs";
@@ -8,7 +8,7 @@ import {useParams} from "react-router-dom";
 import MyMessenger from "../components/Dm/MyMessenger"
 import OtherMessenger from "../components/Dm/OtherMessenger"
 import ChatApi from "../api/ChatApi";
-import {useEffect} from 'react';
+import CustomerApi from "../api/CustomerApi";
 
 const Container = styled.div`
   position: relative;
@@ -42,7 +42,7 @@ const Container = styled.div`
 
   img {
     max-width: 45px;
-    @media (max-width: 390px) {
+    @media (max-width: 768px) {
       max-width: 40px;
     }
   }
@@ -143,6 +143,10 @@ const DirectMessenger = () => {
   const {email} = useContext(UserContext);
 
   const {receiver,sender} = useParams();
+  const [profile, setProfile] =
+      useState(
+          ""
+      )
 
   const [room, setRoom] = useState("");
   const [text, setText] = useState("");
@@ -183,10 +187,23 @@ const DirectMessenger = () => {
     setText(e.target.value);
   }
 
+  useEffect(() => {
+    // 채팅 정보호출
+    (async ()=>{
+      const res = await CustomerApi.getCustomerById(receiver);
+      if (res.status === 200) {
+        setProfile(res.data.profilePic);
+        console.log(profile);
+        console.log(res.data);
+      }
+    })()
+  }, []);
+
 
   useEffect(() => {
     console.log("email = " + email);
-    const getRoom = async () => {
+    // 채팅 연결
+    (async () => {
       const res = await ChatApi.createRoom(receiver);
       if (res.status === 200) {
         console.log(res.data);
@@ -197,39 +214,39 @@ const DirectMessenger = () => {
       } else {
         console.log(res)
       }
-    }
-    getRoom();
+    })();
+
     if (webSocketService) {
       Subscribe();
     }
   }, [webSocketService, room, change]);
 
   return (
-    <Container>
-      <div className="box-chat">
-        <div className="input">
-          <div className="profile">
-            <img
-              src="https://firebasestorage.googleapis.com/v0/b/spotflow-5475a.appspot.com/o/default_avatar.png?alt=media&token=7ea670df-ff84-4a85-bdb2-41b9a7f6a77a"/>
+      <Container>
+        <div className="box-chat">
+          <div className="input">
+            <div className="profile">
+              <img
+                  src={profile}/>
+            </div>
+            <input type="text" id="comment" onChange={onChangeComment} value={text}/>
+            <button className="btn-send" onClick={Send}>
+              <BsSend className="send"/>
+            </button>
           </div>
-          <input type="text" id="comment" onChange={onChangeComment} value={text}/>
-          <button className="btn-send" onClick={Send}>
-            <BsSend className="send"/>
-          </button>
+          <div className="chat-list">
+            {chat && chat.map(e => (
+                <>
+                  {e.sender === email ? (
+                      <MyMessenger chat={e}/>
+                  ) : (
+                      <OtherMessenger chat={e}/>
+                  )}
+                </>
+            ))}
+          </div>
         </div>
-        <div className="chat-list">
-          {chat && chat.map(e => (
-            <>
-              {e.sender === email ? (
-                <MyMessenger chat={e}/>
-              ) : (
-                <OtherMessenger chat={e}/>
-              )}
-            </>
-          ))}
-        </div>
-      </div>
-    </Container>
+      </Container>
   );
 }
 

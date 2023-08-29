@@ -1,23 +1,24 @@
 import {styled} from 'styled-components';
 import MapView from "./MapView";
 import { useState} from "react";
-import { AiOutlineMenu } from 'react-icons/ai';
+// import { AiOutlineMenu } from 'react-icons/ai';
 import SlideDiv from '../components/Home/SlideDiv'
 import MyPage from '../components/Home/MyPage'
 import Follow from '../components/Home/Follow';
+import {ImProfile} from "react-icons/im";
 
-const MenuButton = styled(AiOutlineMenu)`
+const MenuButton = styled.div`
   z-index: 2;
   position: absolute;
-  top: 8.5%;
-  left: 5%;
-  width: 40px;
-  height: 40px;
+  display: flex;
+  top: 7vh;
+  left: 0;
+  width: 30px;
+  height: 60px;
+  background: #00b4d8;
+  border-radius: 0 10px 10px 0;
   @media (max-width : 844px) {
-    width: 30px;
-    height: 30px;
-    top: 8%;
-    left: 10%;
+    top: 2vh;
   }
 `;
 
@@ -30,27 +31,41 @@ const Home = () => {
   const renderPage = () => {
     switch (currentPage) {
       case 'MyPage':
-        return <MyPage  
-          onClose={()=>setActivate(false) }
-          setCurrentPage={()=>setCurrentPage('Follow')}
-          />;
-          case 'Follow' :
-            return <Follow
+        return <MyPage
+            onClose={()=>setActivate(false) }
+            setCurrentPage={()=>setCurrentPage('Follow')}
+        />;
+      case 'Follow' :
+        return <Follow
             setCurrentPage={()=>setCurrentPage('MyPage')}
         />;
       default:
         return null;
     }
   };
+  const style = {
+    left : "390px"
+  }
 
   return (
-    <>
-      <MenuButton onClick={()=>setActivate(true)} />
-      <SlideDiv show={active}>
-        {renderPage()}
-      </SlideDiv>
-      <MapView/>
-    </>
+      <>
+        <MenuButton onClick={()=>setActivate(true)}>
+          <ImProfile
+              size={20}
+              style={{
+                margin:"auto",
+                color:"white"
+              }}
+          />
+        </MenuButton>
+        <SlideDiv show={active}>
+          <MenuButton onClick={()=>setActivate(false)}
+                      style={style}
+          />
+          {renderPage()}
+        </SlideDiv>
+        <MapView/>
+      </>
   );
 };
 

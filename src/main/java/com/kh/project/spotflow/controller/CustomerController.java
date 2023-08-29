@@ -2,6 +2,7 @@ package com.kh.project.spotflow.controller;
 
 import com.kh.project.spotflow.model.dto.Customer.CustomerUpdateDto;
 import com.kh.project.spotflow.model.dto.Customer.CustomerUserRequestDto;
+import com.kh.project.spotflow.model.entity.Customer;
 import com.kh.project.spotflow.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,5 +58,10 @@ public class CustomerController {
           CustomerUserRequestDto customerUserRequestDto = customerService.updateProfile(customerUpdateDto);
           if(customerUserRequestDto != null) return new ResponseEntity<>(customerUserRequestDto, HttpStatus.OK);
           else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+     }
+
+     @GetMapping("/{email}")
+     public ResponseEntity<Customer> getCustomerById(@PathVariable String email) {
+          return new ResponseEntity<>(customerService.userInfo(email), HttpStatus.OK);
      }
 }

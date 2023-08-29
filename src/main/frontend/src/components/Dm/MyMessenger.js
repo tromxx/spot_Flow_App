@@ -8,7 +8,7 @@ const Container = styled.div`
   min-height: 70px;
   box-sizing: border-box;
   margin-left: auto;
-  
+
   .box {
     width: 100%;
     height: 100%;
@@ -26,7 +26,7 @@ const Container = styled.div`
       font-size: .8rem;
     }
   }
-  
+
   span {
     position: absolute;
     bottom: 1px;
@@ -45,15 +45,15 @@ const MyMessenger = (props) => {
     setData(props.chat)
   }, [props])
   return (
-    <>
-      {data && <Container>
-        <div className="box">
-          <p>{data.message}</p>
-          <span>{moment(data.date).format('YYYY년 MM월 DD일 A h시 mm분')}</span>
-        </div>
-      </Container>}
+      <>
+        {data && <Container>
+          <div className="box">
+            <p>{data.message}</p>
+            <span>{moment(data.date).format('YYYY년 MM월 DD일 A h시 mm분')}</span>
+          </div>
+        </Container>}
 
-    </>
+      </>
   )
 }
 

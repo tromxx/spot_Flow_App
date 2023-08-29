@@ -1,14 +1,33 @@
 import styled, {css} from "styled-components";
 
 const ItemGrid = styled.div`
-  min-height: 80vh;
+ // min-height: 80vh;
   display: grid;
   height: 80%;
   width: 100%;
   grid-template-rows: 1fr 1fr;
-  @media (max-width: 850px) {
+
+  width: ${(props) => props.issort === "true" ? "100%" : "45%"};
+  height: ${(props) => props.issort === "true" ? "50%" : "50%"};
+
+
+  @media (min-width: 1300px) {
     ${(props) => props.issort ==="true" ? `
-   
+
+      ` : `  
+      position: relative;
+        left: 28%;
+
+      `}
+        }
+
+
+ 
+
+  @media (max-width: 850px) {
+    width: ${(props) => props.issort === "true" ? "100%" : "100%"};
+    ${(props) => props.issort ==="true" ? `
+
     grid-template-columns: 1fr 1fr;
 ` : `  
 `}
@@ -40,9 +59,9 @@ const Container = styled.div`
   position:relative;
   .Name {
     margin-top:0px;
-    
-    color: ${(props) => props.theme.bgColor === '#171010' ? "white" : "black"};
     font-family: var(--efont);
+    color: ${(props) => props.theme.bgColor === '#171010' ? "white" : "black"};
+
     font-size: 35px;
     font-weight: bolder;
     span {
@@ -67,8 +86,7 @@ const Container = styled.div`
   }
 
   * {
-    font-family: 'Prompt', sans-serif;
-    font-style: var(--kfont);
+    font-family: var(--kfont);
   }
 
   display: flex;
@@ -99,7 +117,7 @@ const Header = styled.div`
   height: 20%;
   width: 100%;
   padding-bottom:20px;
-  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+ // box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
   .Search-bar {
     @media (max-width: 850px) {
@@ -174,7 +192,8 @@ const Main = styled.div`
     width: 100%;
     height: auto;
     background-color: ${(props) => props.theme.bgColor === '#171010' ? "#504C56" : "white"};
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-top: 0.1px solid silver;
+    // box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
   @media (min-width: 1300px) {
     & {
@@ -194,7 +213,7 @@ transition: all 0.5s ease;
   justify-content: flex-start;
   height: 15%;
   width: 100%;
-  border : solid 0.1px #EAEAEA;
+ // border : solid 0.1px #EAEAEA;
   border-radius: 1px;
   background-color: white;
 }
@@ -203,10 +222,15 @@ transition: all 0.5s ease;
   position:relative;
   top:  8px;
   font-size:12px;
+  @media (min-width: 1300px) {
+    & {
+      top: 0px;
+    }
+  }
 }
 
 position: relative;
-background-color: #FCF9F9;
+//background-color: #FCF9F9;
 align-items: center;
 border-radius: 5px;
 margin-left: 20px;
@@ -259,7 +283,7 @@ ${(props) =>
       margin-top: 20px;
   }
 
-  height: 500px;
+  height: 400px;
   flex-direction: column;
   display: flex;
   `}
@@ -283,7 +307,8 @@ ${(props) =>
     }  
     `
       : `  
-    
+      height: 350px;
+      width: 350px;
       `}
 }
 
@@ -362,12 +387,11 @@ const ItemImg = styled.div`
           margin-left: 0px;
            margin-bottom: 10px;
          //    margin-top: 10px;
-            height : 90%;
+            height : 100%;
             width: 100%;
             @media (min-width: 1300px) {
-    background-size: contain;
     background-color:white;
-    border : solid 0.1px #EAEAEA;
+   // border : solid 0.1px #EAEAEA;
     border-radius: 1px;
   }
             

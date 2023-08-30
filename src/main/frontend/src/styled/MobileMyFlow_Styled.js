@@ -339,3 +339,13 @@ export const CreateBtn2 = styled.div`
           `background-color: black; `
   }
 `
+
+export const SearchImg = styled(AiOutlineSearch)`
+	position: absolute;
+	width: 25px;
+	height: 25px;
+	top: 2px;
+	left: 138px;
+	border: none;
+	color: ${props=>props.theme.divColor};
+`;

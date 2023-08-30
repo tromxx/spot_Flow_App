@@ -109,7 +109,7 @@ function App() {
                 <DiarySwiper/>
               </>
             }/>
-                   <Route path="/flow" element={
+                   <Route path="/spot" element={
               <>
                   {windowWidth <= 840 ? null : <HeaderBarNavi />}
                 <TimeLine/>
@@ -135,7 +135,7 @@ function App() {
               </>
             }/>
 
-              <Route path='/myflow' element={
+              <Route path='/myspot' element={
                 <>
                   {windowWidth <= 840 ? null : <HeaderBarNavi/>}
                   {windowWidth <= 840 ? <MobileMyFlow/> : <MyFlow/>}

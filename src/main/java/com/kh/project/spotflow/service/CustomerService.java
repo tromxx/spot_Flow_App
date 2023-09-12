@@ -50,8 +50,6 @@ public class CustomerService {
           return customerData;
      }
 
-
-
      //회원 상테메시지 수정
      public CustomerUserRequestDto updateStatMsg(CustomerUpdateDto customerUpdateDto) {
           Customer customer = authService.getCustomerByEmail();

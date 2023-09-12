@@ -32,7 +32,6 @@ public class DiaryService {
   private final LikeRepository likeRepository;
   private final DiaryCommentRepository commentRepository;
   private final NotificationRepository notificationRepository;
-
   private final NotificationService notificationService;
   private final AuthService authService;
 
@@ -133,6 +132,7 @@ public class DiaryService {
 
 
   /*
+  
    * 다이어리 수정
    * 수정할 목록 diaryItem.timeline
    */

@@ -97,7 +97,7 @@ const Container = styled.div`
    
 
     width: 100vw;
-    min-height: 100vh;
+
     height:  auto;
 
 
@@ -190,7 +190,9 @@ const CreateBtn = styled.div`
 `
 const Main = styled.div`
     width: 100%;
+
     height: auto;
+
     background-color: ${(props) => props.theme.bgColor === '#171010' ? "#504C56" : "white"};
     border-top: 0.1px solid silver;
     // box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;

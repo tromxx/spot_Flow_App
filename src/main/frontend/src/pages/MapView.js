@@ -57,8 +57,8 @@ const MapView = React.memo((props) => {
   }
 
 
-  const dataInit = async (token) => {
-    let res = await MyFlowApi.allFlow(token);
+  const dataInit = async () => {
+    let res = await MyFlowApi.allFlow();
     if (res.status === 200) {
       console.log(res.data);
       let user = await res.data.map(i => ({
@@ -78,7 +78,6 @@ const MapView = React.memo((props) => {
         lng: i.lng
       }));
       setFlow(userData);
-      console.log(userData);
     }
   };
 
@@ -89,7 +88,6 @@ const MapView = React.memo((props) => {
   };
 
   const ToTimeLine = (location) => {
-    console.log(location);
     navigate("/flow", {
       state: {
         loc: location
@@ -98,7 +96,6 @@ const MapView = React.memo((props) => {
   };
 
   const toSpotFocus = (latitude, longitude, location) => {
-    console.log(lat + "/" + lng + "/" + loc);
     setLat(latitude);
     setLng(longitude);
     setLoc(location);
@@ -145,7 +142,6 @@ const MapView = React.memo((props) => {
                 setOlLat(lat);
                 setOlLng(lng);
                 setContent(content);
-                console.log(content)
                 map.panTo(marker.getPosition());
                 setIsVisible(prevState => !prevState);
               }}
@@ -184,8 +180,7 @@ const MapView = React.memo((props) => {
 
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    dataInit(token);
+    dataInit();
     console.log(flow);
     console.log(viewSet);
   }, [props, viewSet]);

@@ -28,7 +28,7 @@ const Container = styled.div`
 
   span {
     position: absolute;
-    bottom: 5px;
+    bottom: 1px;
     left: 5px;
     font-size: .4rem;
     color: rgb(30, 30, 30, 30%);

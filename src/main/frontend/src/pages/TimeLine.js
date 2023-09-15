@@ -281,23 +281,27 @@ const handlePostClick = async (postId) => {
     }
   })
 
-  const fetchMoreData = useCallback(async(lastId) => { // 포스트 불러오는 함수  
+  const fetchMoreData = useCallback(async(lastId) => { 
     setIsLoading(true);
   try {
     const res = await userTimelineApi.getUserTimelineList(lastId);
-    if(res.data.length === 0){ // 포스트가 더이상 없을시 
+    if(res.data.length === 0){ 
       endRef.current = true;
     }
     setTimeout(() => {
-      setItems(prevItems => [...prevItems, ...res.data]); // 가져온 데이터를 기존데이터에 추가
-      setIsLoading(false); // 로딩 0.2초 지연 
-      preventRef.current = true; // 옵저버에게 데이터를 더가져오도록 허용시킴
+      setItems(prevItems => {
+        const newData = res.data.filter(dataItem => !prevItems.some(prevItem => prevItem.id === dataItem.id));
+        return [...prevItems, ...newData];
+      });
+      setIsLoading(false); 
+      preventRef.current = true;
     }, 200);
   } catch (e) {
     setIsLoading(false);
     console.error(e);
   } 
-  }, []);
+}, []);
+
 
     // 무한스크롤 하단 감시 변수 
     const target = useRef(null);

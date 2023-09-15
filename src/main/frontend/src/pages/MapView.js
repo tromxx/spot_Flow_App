@@ -26,9 +26,7 @@ const MapView = React.memo((props) => {
     const end_idx = 100;
     const type = " ";
     const title = " ";
-
     ForumData(start_idx, end_idx, type, title).then(data => {
-      console.log(data);
       let event = data.map(i => ({
         content: ToSpotData.eventOverlay(i),
         lat: i.LOT,

@@ -1,8 +1,7 @@
-import React, {useEffect, useCallback, useMemo, useState} from 'react';
-import {CustomOverlayMap, Map, MapMarker, MarkerClusterer, useMap} from "react-kakao-maps-sdk";
+import React, {useEffect, useCallback, useState} from 'react';
+import {Map, MapMarker, useMap} from "react-kakao-maps-sdk";
 import {FaMapMarkerAlt} from "react-icons/fa";
 import {GiPartyPopper} from "react-icons/gi";
-
 import {useNavigate} from "react-router-dom";
 import ToSpotData from "../dataSet/ToSpotData";
 import * as ToSpot from "../components/ToSpotComponent";
@@ -17,7 +16,7 @@ const MapView = React.memo((props) => {
   const [lat, setLat] = useState(37.4923615);
   const [lng, setLng] = useState(127.0292881);
   const [flow, setFlow] = useState([]);
-  const [forumData, setForumData] = useState([]);
+  // const [forumData, setForumData] = useState([]);
   const [eventFlow, setEventFlow] = useState([]);
 
   // 축제 데이터 가져오기
@@ -93,11 +92,11 @@ const MapView = React.memo((props) => {
     });
   };
 
-  const toSpotFocus = (latitude, longitude, location) => {
-    setLat(latitude);
-    setLng(longitude);
-    setLoc(location);
-  };
+  // const toSpotFocus = (latitude, longitude, location) => {
+  //   setLat(latitude);
+  //   setLng(longitude);
+  //   setLoc(location);
+  // };
 
   const [viewSet, setViewSet] = useState(0);
 
@@ -110,8 +109,8 @@ const MapView = React.memo((props) => {
     const map = useMap();
     // const [isVisible, setIsVisible] = useState(false);
 
-    const markerImg = "https://firebasestorage.googleapis.com/v0/b/spotflow-5475a.appspot.com/o/images%2Ffree-icon-music-festival-5039367-removebg-preview.png?alt=media&token=b0f4139d-4e46-468f-b29d-04c60c0a7af3";
-    const soonImg = "https://firebasestorage.googleapis.com/v0/b/spotflow-5475a.appspot.com/o/images%2Ffree-icon-location-10797038.png?alt=media&token=e0965f50-abc4-40b0-a7eb-684052328586";
+    // const markerImg = "https://firebasestorage.googleapis.com/v0/b/spotflow-5475a.appspot.com/o/images%2Ffree-icon-music-festival-5039367-removebg-preview.png?alt=media&token=b0f4139d-4e46-468f-b29d-04c60c0a7af3";
+    // const soonImg = "https://firebasestorage.googleapis.com/v0/b/spotflow-5475a.appspot.com/o/images%2Ffree-icon-location-10797038.png?alt=media&token=e0965f50-abc4-40b0-a7eb-684052328586";
 
     return (
         <>

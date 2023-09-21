@@ -175,6 +175,23 @@ const MapView = React.memo((props) => {
     );
   });
 
+  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const mapStyle = {
+    width: '100%',
+    height: viewportWidth < 844 ? '100vh' : 'calc(100vh - 7vh - 2px)',
+  };
+
 
   useEffect(() => {
     dataInit();
@@ -185,16 +202,12 @@ const MapView = React.memo((props) => {
   return (
       <ToSpot.Container>
         <Map
-            center={{
-              lat: lat,
-              lng: lng,
-            }}
-            style={{
-              width: "100%",
-              height: "100vh",
-              position: "relative"
-            }}
-            level={3}
+           center={{
+                   lat: lat,
+                   lng: lng,
+                 }}
+                 style={mapStyle}
+                 level={3}
         >
           {isVisible &&
               <CustomOverlay

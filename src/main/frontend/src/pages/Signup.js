@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PolicyModal from "../utils/PolicyModal";
 import LocationPolicy from "../dataSet/LocationPolicy"
 import SpotFlowPolicy from "../dataSet/SpotFlowPolicy"
-import SignupContainer from "../components/SingUp/SignUpBox";
+import SignupContainer from "../components/SignUp/SignUpBox";
 
 
 const Signup = () => {

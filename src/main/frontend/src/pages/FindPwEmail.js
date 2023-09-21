@@ -12,7 +12,7 @@ const FindPwEmailDiv = styled.div`
     align-items: center;
     text-align: center;
     ul{
-      margin-top: 10%;
+      margin-top: 5%;
 		width: 400px;
 		display: flex;
 		flex-direction: column;
@@ -85,7 +85,7 @@ const FindPwEmail = () =>{
    const navigate = useNavigate();
 	const [email, setEmail] = useState();
 	const [message, setMessage] = useState();
-	const [condition, setCondition] = useState(false); 
+	const [condition, setCondition] = useState(false);
    const [isConfirm, setIsConfirm] = useState(false);
    const [modal, setModal] = useState(false);
    const [text, setText] = useState("");
@@ -109,7 +109,7 @@ const FindPwEmail = () =>{
       setModal(true);
       setText("이메일을 입력하세요");
    }
-   
+
    const sendTempPwd = async()=>{
       console.log("working");
       try{
@@ -132,10 +132,9 @@ const FindPwEmail = () =>{
          setModal(false);
       }
    }
-   
+
    return(
         <FindPwEmailDiv>
-         {console.log(isConfirm)}
             <ul>
                <li><img src={Logo} alt="" onClick={()=>navigate("/")}/></li>
                <li><h3>로그인에 문제가 있나요?</h3></li>

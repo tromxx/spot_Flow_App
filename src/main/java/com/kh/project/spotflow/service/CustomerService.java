@@ -70,6 +70,7 @@ public class CustomerService {
           Customer customer = authService.getCustomerByEmail();
           customer.setProfilePic(customerUpdateDto.getProfilePic());
           customer.setStatMsg(customerUpdateDto.getStatMsg());
+          customerRepository.save(customer);
           return CustomerUserRequestDto.getCustomerInfo(customer);
      }
 

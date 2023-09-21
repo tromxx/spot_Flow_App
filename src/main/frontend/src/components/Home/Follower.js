@@ -39,6 +39,11 @@ const FollowDiv = styled.div`
             }
         }
     }
+    .FollowingErrorContainer{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     .FollowingContainer{
         width: 350px;
         height: 75vh;

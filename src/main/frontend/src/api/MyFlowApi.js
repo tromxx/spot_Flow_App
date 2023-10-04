@@ -16,7 +16,6 @@ const MyFlowApi = {
       img: img,
       place: place
     };
-
     return await axios.post(Backend + "/timeline/myflownew", flowData, {
       headers: {
         'Content-Type': 'application/json',
@@ -52,14 +51,15 @@ const MyFlowApi = {
     });
   },
 
-	allFlow: async (token) => {
+  allFlow: async () => {
+    const token = localStorage.getItem('authToken');
     return await axios.get(Backend + "/timeline/find", {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
     });
-	},
+  },
   deleteFlow: async (data) => {
     const token = localStorage.getItem('authToken');
     try {

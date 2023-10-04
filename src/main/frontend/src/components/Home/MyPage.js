@@ -1,387 +1,331 @@
-import {styled} from 'styled-components';
-import {useTheme} from "../../context/themeProvider";
+import { styled } from 'styled-components';
+import { useTheme } from "../../context/themeProvider";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineClose } from 'react-icons/ai'
-import { useRef, useState } from 'react';
-import {RxGear} from 'react-icons/rx'
-import {BsCamera} from 'react-icons/bs'
+import { AiOutlineClose } from 'react-icons/ai';
+import { useState } from 'react';
+import { RxGear } from 'react-icons/rx';
+import { BsCamera } from 'react-icons/bs';
 import { useContext } from 'react';
 import { UserContext } from '../../context/UserStore';
-import { storage } from '../../api/FirebaseApi'
+import Error from '../Common/Error';
 import CustomerApi from '../../api/CustomerApi';
-import Error from '../Common/Error'
+import { storage } from '../../api/FirebaseApi'
+import LoginSignUpModal from '../../utils/LoginSignUpModal'
 
-const LogInDiv = styled.div`
-  margin-top: 7vh;
-  width: 390px;
-  height: 93vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: baseline;
-  align-items: center;
-  border-right: 1px solid var(--grey);
-  background-color: ${props=>props.theme.bgColor};
-  color: ${props=>props.theme.textColor};
-  border: ${props=>props.theme.borderColor};
-  font-family: var(--efont);
-  transition: 0.6s ease;
-  .controlDiv{
-    margin-top: 15px;
-    display: flex;
-    gap: 250px;
-  }
-  img{
-    border-radius: 50%;
-    width: 130px;
-    height: 130px;
-    margin-top: 15px;
-    text-align: center;
-  }
-  .profileDiv{
+const MyPagesContainer = styled.div`
+    width: 390px;
+    height: calc(100vh - 7vh - 3px);
+    transition: all 1s;
     display: flex;
     flex-direction: column;
+    justify-content: baseline;
     align-items: center;
-  }
-  .followingfollowerDiv{
+    position: absolute;
+    background-color: ${props => props.theme.bgColor};
+    color: ${props => props.theme.textColor};
+    border: ${props => props.theme.borderColor};
+    left: ${(props) => (props.$active ? '0' : '-390px')};
+    z-index: 3;
+    .controlDiv {
+        margin-top: 15px;
+        display: flex;
+        gap: 250px;
+    }
+    img {
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        text-align: center;
+    }
+    @media (max-width: 844px) {
+        height: 100vh;
+    }
+`;
+
+const Controler = styled.div`
+    margin-top: 10px;
     display: flex;
-    gap: 50px;
-  }
-  @media (max-width : 844px){
-    height: 100vh;
-    margin-top: 0px;
-  }
-`;
-
-const LogOutDiv=styled.div`
-  margin-top: 7vh;
-  width: 390px;
-  height: 93vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: baseline;
-  align-items: center;
-  border-right: 1px solid var(--grey);
-  background-color: white;
-  font-family: var(--efont);
-  .closeDiv{
-    margin-top: 15px;
-    display: flex;
-    justify-content: right;
-    margin-left: 290px;
-  }
-  @media (max-width : 844px){
-    height: 100vh;
-    margin-top: 0px;
-  }
-`;
-
-const Caption = styled.div`
-  margin: 0px;
-  padding: 0px;
-  position: absolute;
-  margin-top: 80px;
-  width: 130px; 
-  height: 65px; 
-  border-radius: 0 0 70px 70px;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 5;
-  display: ${props => (props.$isactive === "false" ? 'block' : 'none')};
-  input {
-    display: none;
-  }
-`;
-
-const TextArea = styled.textarea`
-  position: absolute;
-  margin-top: 300px;
-  resize: none;
-  font-family: var(--kfont);
-  width: 300px;
-  height: 70px;
-  border-radius: 20px;
-  text-align: center;
-  resize: none;
-  padding: 2px;
-  display: ${props => (props.$isactive === "false" ? 'block' : 'none')};
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transform: ${(props) => `translateX(${props.$isactive ? '-170%' : '0'})`};
+    transition: transform 2.7s ease;
+    > p:first-child {
+        font-size: 25px;
+        font-weight: bold;
+    }
+	> p:nth-child(3){
+		margin-top : 10px;
+		text-align : center;
+		width : 300px;
+		overflow-wrap: break-word;
+    	word-wrap: break-word;
+    	word-break: break-all;
+	}
+    > p:nth-child(4),
+    > p:nth-child(5),
+    > p:nth-child(6) {
+        font-weight: bold;
+        font-size: 27px;
+        margin-top: 25px;
+        cursor: pointer;
+        &:hover {
+            color: var(--lightblue);
+        }
+    }
+    .followDiv {
+        gap: 100px;
+        display: flex;
+		p:nth-child(1), p:nth-child(2){
+			cursor: pointer;
+			&:hover{
+				color: var(--lightblue);
+			}
+		}
+    }
+    .changeControl {
+        margin-top: 90%;
+        display: flex;
+        gap: 137px;
+        p {
+            font-size: 15px;
+            font-weight: bolder;
+            cursor: pointer;
+            &:hover {
+                color: var(--lightblue);
+            }
+        }
+    }
 `;
 
 const Button = styled.button`
-  width: 200px;
-  height: 50px;
-  color: white;
-  font-weight: bold;
-  text-align: center;
-  border: none;
-  outline: none;
-  border-radius: 20px;
-  background-color: var(--blue);
-  display: ${props => (props.$isactive === "false" ? 'block' : 'none')};
-  &:hover{
-    color: var(--lightblue);
-    cursor: pointer;
-  }
+    width: 300px;
+    height: 60px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    border: none;
+    outline: none;
+    position: absolute;
+    margin-top: 400px;
+    border-radius: 20px;
+    background-color: var(--blue);
+    transition: all 1s;
+    display: ${props => (props.$isactive ? 'block' : 'none')};
+    &:hover {
+        color: var(--lightblue);
+        cursor: pointer;
+    }
 `;
 
-const Paragrph = styled.p`
-  margin: 15px;
-  transform: ${props  => `translateX(${props.$isactive === "true" ? 0 : -900}%)`};
-  &.NickName{
-    transition: transform 1.8s ease;
-    font-size: 20px;
-    font-weight: bolder;
-  }
-  &.Following{
-    transition: transform 2.0s ease;
-    &:hover {
-      color: var(--lightblue);
-      cursor: pointer;
+const Caption = styled.div`
+    position: absolute;
+    margin-top: 130px;
+    width: 150px;
+    height: 71px;
+    border-radius: 0 0 71px 71px;
+    background-color: rgba(0, 0, 0, 0.6);
+    transition: all 1s;
+    opacity: ${(props) => (props.$isactive ? '2' : '0')};
+    input {
+        display: none;
     }
-  }
-  &.StatMsg{
-    transition: transform 2.2s ease;
-    overflow-wrap: break-word;
-    word-wrap: break-word; 
-    word-break: break-all;
-  }
-  &.MyFlow {
-    transition: transform 2.4s ease;
-    font-size : 30px;
-    font-weight : bolder;
-    &:hover {
-      color: var(--lightblue);
-      cursor: pointer;
+`;
+
+const LogOutDiv = styled.div`
+    width: 390px;
+    height: calc(100vh - 7vh - 1px);
+    transition: all 1.7s;
+    position: absolute;
+    background-color: white;
+    left: ${(props) => (props.$active ? '0' : '-390px')};
+    z-index: 3;
+    @media (max-width: 844px) {
+        height: 100vh;
     }
-  }
-  &.Diary {
-    transition: transform 2.6s ease;
-    font-size : 30px;
-    font-weight : bolder;
-    &:hover {
-      color: var(--lightblue);
-      cursor: pointer;
-    }
-    &.nickName{
-      margin-left : 10px;
-    }
-    span {
-      color: #00C2FA;
-    }
-  } 
-  &.Spot {
-    transition: transform 2.6s ease;
-    font-size : 30px;
-    font-weight : bolder;
-    &:hover {
-      color: var(--lightblue);
-      cursor: pointer;
-    }
-  }
-  &.Theme {
-    transition: transform 2.8s ease;
-    font-size : 30px;
-    font-weight : bolder;
-    &:hover {
-      color: var(--lightblue);
-      cursor: pointer;
-    }
-  }
-`
-// 톱니버튼 CSS
+`;
+
 const ControlButton = styled(RxGear)`
-  width: 30px;
-  height: 30px;
-  color: var(--grey);
-  transition: transform 0.7s ease;
-  transform: ${props => (props.$isactive === "true" ? 'rotate(120deg)' : 'rotate(5deg)')};
-
-  &:hover {
-    color: skyblue;
-  }
+    width: 30px;
+    height: 30px;
+    color: var(--grey);
+    transition: transform 0.7s ease;
+    transform: ${props => (props.$isactive ? 'rotate(120deg)' : 'rotate(5deg)')};
+    cursor: pointer;
+    &:hover {
+        color: skyblue;
+    }
 `;
 
-//close 버튼 CSS
 const CloseButton = styled(AiOutlineClose)`
-  width: 35px;
-  height: 35px;
-  color: var(--grey);
-  &:hover{
+    width: 35px;
+    height: 35px;
+    color: var(--grey);
     cursor: pointer;
-    color: var(--lightblue);
-  }
+    &:hover {
+        cursor: pointer;
+        color: var(--lightblue);
+    }
 `;
 
-//프로파일 이미지 업로드 수정
 const CameraButton = styled(BsCamera)`
-  width: 30px;
-  height: 30px;
-  color: var(--grey);
-  margin-top: 10px;
-  margin-left: 49px;
-  &:hover{
-    cursor: pointer;
-    color: var(--lightblue);
-  }
+    width: 30px;
+    height: 30px;
+    color: var(--grey);
+    margin-top: 15px;
+    margin-left: 60px;
+    &:hover {
+        cursor: pointer;
+        color: var(--lightblue);
+    }
 `;
 
-const MyPage = ({ onClose, setCurrentPage }) => {
-  const [ThemeMode, setTheme] = useTheme(); 
-  const [isactive, setIsActive] = useState(true);
-  const [prevImgFile, setPrevImgFile] = useState("");
-  const [imgFile, setImgFile] = useState(null);
-  const [data, setData] = useState(null);
-  const [url, setUrl] = useState(null);
-  const textareaRef = useRef();
-  const navigate = useNavigate();
-  const{nickname, setNickname, profilePic, setProfilePic, statMsg, setStatMsg,follower, following, isLoggedIn, setIsLoggedIn} = useContext(UserContext);
+const TextArea = styled.textarea`
+    position: absolute;
+    margin-top: 300px;
+    resize: none;
+    font-family: var(--kfont);
+    width: 300px;
+    height: 70px;
+    border-radius: 20px;
+    text-align: center;
+    resize: none;
+    padding: 2px;
+    transition: all 1s;
+    display: ${props => (props.$isactive ? 'block' : 'none')};
+`;
 
-  const handleClick = () => {
-    setIsActive(!isactive);
-    setPrevImgFile("");
-    textareaRef.current.value = '';
-  };
+const MyPages = ({ active, handleActive, handleFollower, handleFollowing }) => {
+    const navigate = useNavigate();
+    const [ThemeMode, setTheme] = useTheme();
+    const [isactive, setIsActive] = useState(false);
+	const [prevImgFile, setPrevImgFile] = useState();
+	const [imgFile, setImgFile] = useState(null);
+    const [text, setText] = useState("");
+    const [openModal, setOpenModal] = useState(false);
+    const [modalText, setModalText] = useState("");
+	const { isLoggedIn, profilePic, setProfilePic, nickname, follower, following, statMsg, setStatMsg } = useContext(UserContext);
 
-  const savePrevImgFile = (e) => {
-    const file = e.target.files[0];
-    setImgFile(e.target.files[0]);
-    if(file){
-      const reader = new FileReader();
-      reader.onload =(e) => {
-        setPrevImgFile(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }else{
-      setPrevImgFile("");
+    const handleChangeProfile = () => {
+        setIsActive(!isactive);
+        setText("");
+		setPrevImgFile("");
+		setImgFile(null);
     }
-  };
-  
-  const updateProfile = () => {
-    const token = localStorage.getItem('authToken');
 
-    if(data != null && imgFile === null){
-      console.log("Status Message Updated Activated");
-      const customerData ={
-        statMsg : data
-      };
-      updateStatMsg(customerData, token);
-      console.log("Status Message Updated Finish");
-    }
-    if (data === null && imgFile != null) {
-      console.log("ProfilePic Updated Activated");
-      const storageRef = storage.ref();
-      const fileRef = storageRef.child(imgFile.name);
-      fileRef.put(imgFile).then(() => {
-        fileRef.getDownloadURL().then((url) => {
-          setUrl(url);
-          const customerData = {
-            profilePic : url
-          };
-          updateProfilePic(customerData,token);
-          console.log("Profilepic Updated Finish");
-      });});
-    }
-    if(data !=null && imgFile != null){
-      console.log("Profile Updated Activated");
-      const storageRef = storage.ref();
-      const fileRef = storageRef.child(imgFile.name);
-      fileRef.put(imgFile).then(() => {
-        fileRef.getDownloadURL().then((url) => {
-          setUrl(url);
-          const customerData = {
-            profilePic : url,
-            statMsg : data
-          };
-          updateStatMsgProfilePic(customerData,token);
-          console.log("Profile Updated Finish");
-      });});
-    }
-  };
+	const handlePreImgFile = (e) => {
+		setImgFile(e.target.files[0]);
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			setPrevImgFile(e.target.result);
+		}
+		reader.readAsDataURL(e.target.files[0]);
+	}
 
-  const updateStatMsg = async(customerData, token) => {
-    const response = await CustomerApi.updateStatMsg(token, customerData);
-    setNickname(response.data.nickName);
-    setStatMsg(response.data.statMsg);
-    setProfilePic(response.data.profilePic);
-    setIsLoggedIn(true);
-    setIsActive(!isactive);
-    setData(null);
-    setImgFile(null);
-  }
+	const updatePorfile = async() => {
+		const token = localStorage.getItem('authToken');
 
-  const updateProfilePic = async(customerData, token) => {
-    const response = await CustomerApi.updateProfilePic(token, customerData);
-    setNickname(response.data.nickName);
-    setStatMsg(response.data.statMsg);
-    setProfilePic(response.data.profilePic);
-    setIsLoggedIn(true);
-    setIsActive(!isactive);
-    setData(null);
-    setImgFile(null);
-  }
+		if(text.length !== 0 && imgFile === null){
+			const customerData = {
+				statMsg : text
+			};
+			const response = await CustomerApi.updateStatMsg(token, customerData);
+			setIsActive(false);
+			setStatMsg(response.data.statMsg);
+		} else if(text.length === 0 && imgFile !== null){
+			const url = await imgUpload();
+			const customerData = {
+				profilePic : url
+			};
+			console.log(customerData);
+			const response = await CustomerApi.updateProfilePic(token, customerData);
+			setIsActive(false);
+			setProfilePic(response.data.profilePic);
+		}else if(text.length > 0 && imgFile !== null){
+			const url = await imgUpload();
+		    const customerData = {
+				profilePic : url,
+				statMsg : text
+			};
+			const response = await CustomerApi.updateStatMsgProfilePic(token, customerData);
+			setIsActive(false);
+			setStatMsg(response.data.statMsg);
+			setProfilePic(response.data.profilePic);
+		}else{
+            setOpenModal(true);
+            setModalText("입력된개 없습니다.");
+        }
+	}
 
-  const updateStatMsgProfilePic = async(customerData, token) => {
-    const response = await CustomerApi.updateStatMsgProfilePic(token, customerData);
-    setNickname(response.data.nickName);
-    setStatMsg(response.data.statMsg);
-    setProfilePic(response.data.profilePic);
-    setIsLoggedIn(true);
-    setIsActive(!isactive);
-    setData(null);
-    setImgFile(null);
-  }
+	const imgUpload = async () => {
+		const storageRef = storage.ref();
+		const fileRef = storageRef.child(imgFile.name);
+		await fileRef.put(imgFile);
+		return await fileRef.getDownloadURL();
+	};
 
-  return (
-    <>
-    {isLoggedIn ? 
-      <LogInDiv>
-        <div className="controlDiv">
-          <ControlButton onClick={handleClick}  $isactive={isactive.toString()}  />
-          <CloseButton onClick={onClose} />
-        </div>
-        <div className='profileDiv'>
-          <img
-              src={prevImgFile ? prevImgFile : profilePic || "/images/icon/user.png"}
-              alt="프로필 이미지"
-          />
-          <Caption $isactive={isactive.toString()}>
-            <label htmlFor="profileImg">
-              <CameraButton/>
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              id="profileImg"
-              onChange={savePrevImgFile}
-            />
-          </Caption>
-          <Paragrph $isactive={isactive.toString()} className='NickName'>{nickname}</Paragrph>
-          <div className='followingfollowerDiv'>
-            <Paragrph $isactive={isactive.toString()} className='Following' onClick={setCurrentPage}>Follower : {follower}</Paragrph>
-            <Paragrph $isactive={isactive.toString()} className='Following' onClick={setCurrentPage}>Following : {following}</Paragrph>
-         </div>
-          <Paragrph $isactive={isactive.toString()} className='StatMsg'>{statMsg}</Paragrph>
-        </div>
-        <Paragrph onClick={()=>navigate("/spot")} $isactive={isactive.toString()} className='Spot'>ToSpot</Paragrph>
-        <Paragrph onClick={()=>navigate("/diary")} $isactive={isactive.toString()} className='Diary'>To<span>F</span>low</Paragrph>
-        <Paragrph onClick={setTheme} $isactive={isactive.toString()} className='Theme' >{ThemeMode === "dark" ? "Light Mode" : "Dark Mode"}</Paragrph>
-        <Button $isactive={isactive.toString()} onClick={updateProfile} >저장하기</Button>
-        <TextArea
-          spellCheck="false"
-          placeholder="상태 메시지를 입력하세요"
-          onChange={(e)=> setData(e.target.value)}
-          $isactive={isactive.toString() }
-          ref={textareaRef}
-        ></TextArea>
-      </LogInDiv>
-      :
-      <LogOutDiv>
-        <div className="closeDiv">
-          <CloseButton onClick={onClose} />
-        </div>
-        <Error/>
-      </LogOutDiv>
-    }
-    </>
-  );
+
+    return (
+        <>
+            {isLoggedIn ?
+                <MyPagesContainer $active={active}>
+                    <div className="controlDiv">
+                        <ControlButton onClick={handleChangeProfile} $isactive={isactive} />
+                        <CloseButton onClick={handleActive} />
+                    </div>
+					<img
+              			src={prevImgFile ? prevImgFile : profilePic || "/images/icon/user.png"}
+              			alt="Error"
+          			/>
+                    <Caption $isactive={isactive}>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            id="profileImg"
+							onChange={handlePreImgFile}
+                        />
+                        <label htmlFor="profileImg">
+                            <CameraButton />
+                        </label>
+                    </Caption>
+                    <Controler $isactive={isactive}>
+                        <p>{nickname}</p>
+                        <div className="followDiv">
+                            <p onClick={handleFollower}>Follower : {follower}</p>
+                            <p onClick={handleFollowing}>Following : {following}</p>
+                        </div>
+                        <p>{statMsg}</p>
+                        <p onClick={() => navigate("/spot")}>ToSpot</p>
+                        <p onClick={() => navigate("/flow")}>ToFlow</p>
+                        <p onClick={setTheme}>{ThemeMode === "dark" ? "Light Mode" : "Dark Mode"}</p>
+                        <div className='changeControl'>
+                            <p>닉네임 변경</p>
+                            <p>비밀번호 변경</p>
+                        </div>
+                    </Controler>
+                    <Button $isactive={isactive} onClick={updatePorfile}>저장하기</Button>
+                    <TextArea
+                        spellCheck="false"
+                        placeholder="상태 메시지를 입력하세요"
+                        $isactive={isactive}
+                        onChange={(e) => setText(e.target.value)}
+                        value={isactive ? undefined : ""}
+                    />
+                    <LoginSignUpModal
+                        open={openModal}
+                        children={modalText}
+                        type={true}
+                        confirm={()=>setOpenModal(false)}
+                    />
+                </MyPagesContainer>
+                :
+                <LogOutDiv $active={active}>
+                    <Error />
+                </LogOutDiv>
+            }
+        </>
+    );
 };
 
-export default MyPage;
+export default MyPages;

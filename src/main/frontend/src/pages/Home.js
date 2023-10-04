@@ -1,72 +1,83 @@
-import {styled} from 'styled-components';
+import { styled } from 'styled-components';
 import MapView from "./MapView";
-import { useState} from "react";
-// import { AiOutlineMenu } from 'react-icons/ai';
-import SlideDiv from '../components/Home/SlideDiv'
-import MyPage from '../components/Home/MyPage'
-import Follow from '../components/Home/Follow';
-import {ImProfile} from "react-icons/im";
+import { useCallback, useState } from "react";
+import { ImProfile } from "react-icons/im";
+import MyPages from '../components/Home/Mypage';
+import Follower from '../components/Home/Follower';
+import Following from '../components/Home/Following';
 
 const MenuButton = styled.div`
-  z-index: 2;
-  position: absolute;
-  display: flex;
-  top: 7vh;
-  left: 0;
-  width: 30px;
-  height: 60px;
-  background: #00b4d8;
-  border-radius: 0 10px 10px 0;
-  @media (max-width : 844px) {
-    top: 2vh;
-  }
+    z-index: 2;
+    position: absolute;
+    top: 10vh;
+    left: 0;
+    width: 30px;
+    height: 60px;
+    background: var(--blue);
+    color: white;
+    border-radius: 0 10px 10px 0;
+    display: ${(props) => (props.$active ? 'none' : 'flex')};
+    justify-content: center;
+    align-items: center;
+    @media (max-width : 844px) {
+        top: 7vh;
+    }
 `;
 
-
+const SlideButton = styled(ImProfile)`
+    cursor: pointer;
+    font-size: 20px;
+    margin: auto;
+`;
 const Home = () => {
-  const [active, setActivate] = useState(false);
-  const [currentPage, setCurrentPage] = useState('MyPage');
+    const [active, setActive] = useState(false);
+    const [page, setPage] = useState('MyPage');
+
+    const handleActive = useCallback(() => {
+      setActive(false);
+    }, []);
 
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'MyPage':
-        return <MyPage
-            onClose={()=>setActivate(false) }
-            setCurrentPage={()=>setCurrentPage('Follow')}
-        />;
-      case 'Follow' :
-        return <Follow
-            setCurrentPage={()=>setCurrentPage('MyPage')}
-        />;
-      default:
-        return null;
+    const renderSideBar = (page) => {
+        switch(page){
+            case 'MyPage' :
+                return <MyPages
+                    active={active}
+                    handleActive={handleActive}
+                    handleFollower={()=>setPage('Follower')}
+                    handleFollowing={()=>setPage('Following')}
+                />
+            case 'Follower' :
+                return <Follower
+                    active={active}
+                    handleActive={handleActive}
+                    handlePage={()=>setPage('MyPage')}
+                    handleFollowing={()=>setPage('Following')}
+                />
+            case 'Following' :
+                return <Following
+                    active={active}
+                    handleActive={handleActive}
+                    handlePage={()=>setPage('MyPage')}
+                    handleFollower={()=>setPage('Follower')}
+                />
+            default :
+                return null;
+        }
     }
-  };
-  const style = {
-    left : "390px"
-  }
 
-  return (
+    return (
       <>
-        <MenuButton onClick={()=>setActivate(true)}>
-          <ImProfile
-              size={20}
-              style={{
-                margin:"auto",
-                color:"white"
-              }}
-          />
+        <MenuButton onClick={() => setActive(true)} $active={active}>
+          <SlideButton />
         </MenuButton>
-        <SlideDiv show={active}>
-          <MenuButton onClick={()=>setActivate(false)}
-                      style={style}
-          />
-          {renderPage()}
-        </SlideDiv>
-        <MapView/>
+            {renderSideBar(page)}
+        <MapView />
       </>
-  );
-};
+    );
+  };
 
-export default Home;
+  export default Home;
+
+
+

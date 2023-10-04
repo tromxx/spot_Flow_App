@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const DOMAIN = "http://localhost:8111";
+const DOMAIN = "";
 
 const CustomerApi = {
   //Get 회원정보 token 으로 가죠오기

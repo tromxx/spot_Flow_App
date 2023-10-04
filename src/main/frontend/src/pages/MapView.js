@@ -1,8 +1,7 @@
-import React, {useEffect, useCallback, useMemo, useState} from 'react';
-import {CustomOverlayMap, Map, MapMarker, MarkerClusterer, useMap} from "react-kakao-maps-sdk";
+import React, {useEffect, useCallback, useState} from 'react';
+import {Map, MapMarker, useMap} from "react-kakao-maps-sdk";
 import {FaMapMarkerAlt} from "react-icons/fa";
 import {GiPartyPopper} from "react-icons/gi";
-
 import {useNavigate} from "react-router-dom";
 import ToSpotData from "../dataSet/ToSpotData";
 import * as ToSpot from "../components/ToSpotComponent";
@@ -17,7 +16,7 @@ const MapView = React.memo((props) => {
   const [lat, setLat] = useState(37.4923615);
   const [lng, setLng] = useState(127.0292881);
   const [flow, setFlow] = useState([]);
-  const [forumData, setForumData] = useState([]);
+  // const [forumData, setForumData] = useState([]);
   const [eventFlow, setEventFlow] = useState([]);
 
   // 축제 데이터 가져오기
@@ -26,9 +25,7 @@ const MapView = React.memo((props) => {
     const end_idx = 100;
     const type = " ";
     const title = " ";
-
     ForumData(start_idx, end_idx, type, title).then(data => {
-      console.log(data);
       let event = data.map(i => ({
         content: ToSpotData.eventOverlay(i),
         lat: i.LOT,
@@ -57,8 +54,8 @@ const MapView = React.memo((props) => {
   }
 
 
-  const dataInit = async (token) => {
-    let res = await MyFlowApi.allFlow(token);
+  const dataInit = async () => {
+    let res = await MyFlowApi.allFlow();
     if (res.status === 200) {
       console.log(res.data);
       let user = await res.data.map(i => ({
@@ -78,7 +75,6 @@ const MapView = React.memo((props) => {
         lng: i.lng
       }));
       setFlow(userData);
-      console.log(userData);
     }
   };
 
@@ -89,7 +85,6 @@ const MapView = React.memo((props) => {
   };
 
   const ToTimeLine = (location) => {
-    console.log(location);
     navigate("/flow", {
       state: {
         loc: location
@@ -97,12 +92,11 @@ const MapView = React.memo((props) => {
     });
   };
 
-  const toSpotFocus = (latitude, longitude, location) => {
-    console.log(lat + "/" + lng + "/" + loc);
-    setLat(latitude);
-    setLng(longitude);
-    setLoc(location);
-  };
+  // const toSpotFocus = (latitude, longitude, location) => {
+  //   setLat(latitude);
+  //   setLng(longitude);
+  //   setLoc(location);
+  // };
 
   const [viewSet, setViewSet] = useState(0);
 
@@ -115,8 +109,8 @@ const MapView = React.memo((props) => {
     const map = useMap();
     // const [isVisible, setIsVisible] = useState(false);
 
-    const markerImg = "https://firebasestorage.googleapis.com/v0/b/spotflow-5475a.appspot.com/o/images%2Ffree-icon-music-festival-5039367-removebg-preview.png?alt=media&token=b0f4139d-4e46-468f-b29d-04c60c0a7af3";
-    const soonImg = "https://firebasestorage.googleapis.com/v0/b/spotflow-5475a.appspot.com/o/images%2Ffree-icon-location-10797038.png?alt=media&token=e0965f50-abc4-40b0-a7eb-684052328586";
+    // const markerImg = "https://firebasestorage.googleapis.com/v0/b/spotflow-5475a.appspot.com/o/images%2Ffree-icon-music-festival-5039367-removebg-preview.png?alt=media&token=b0f4139d-4e46-468f-b29d-04c60c0a7af3";
+    // const soonImg = "https://firebasestorage.googleapis.com/v0/b/spotflow-5475a.appspot.com/o/images%2Ffree-icon-location-10797038.png?alt=media&token=e0965f50-abc4-40b0-a7eb-684052328586";
 
     return (
         <>
@@ -145,7 +139,6 @@ const MapView = React.memo((props) => {
                 setOlLat(lat);
                 setOlLng(lng);
                 setContent(content);
-                console.log(content)
                 map.panTo(marker.getPosition());
                 setIsVisible(prevState => !prevState);
               }}
@@ -182,10 +175,26 @@ const MapView = React.memo((props) => {
     );
   });
 
+  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    dataInit(token);
+    const handleResize = () => {
+      setViewportWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  const mapStyle = {
+    width: '100%',
+    height: viewportWidth < 844 ? '100vh' : 'calc(100vh - 7vh - 2px)',
+  };
+
+
+  useEffect(() => {
+    dataInit();
     console.log(flow);
     console.log(viewSet);
   }, [props, viewSet]);
@@ -193,16 +202,12 @@ const MapView = React.memo((props) => {
   return (
       <ToSpot.Container>
         <Map
-            center={{
-              lat: lat,
-              lng: lng,
-            }}
-            style={{
-              width: "100%",
-              height: "100vh",
-              position: "relative"
-            }}
-            level={3}
+           center={{
+                   lat: lat,
+                   lng: lng,
+                 }}
+                 style={mapStyle}
+                 level={3}
         >
           {isVisible &&
               <CustomOverlay

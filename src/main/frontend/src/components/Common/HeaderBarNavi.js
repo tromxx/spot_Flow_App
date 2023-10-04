@@ -94,7 +94,7 @@ const HeaderBar = (props) => {
   const { email, setEmail, nickname, setNickname,setProfilePic,setStatMsg,setFollower, setFollowing ,isLoggedIn, setIsLoggedIn, joinDate, setJoinDate } = useContext(UserContext);
   const [isNew, setIsNew] = useState("");
 
-  const subscribeUrl = "http://localhost:8111/sub";
+  const subscribeUrl = "http://52.64.235.44/sub";
     useEffect(() => {
     const token = localStorage.getItem('authToken');
     const getCustomerInfo = async () => {

@@ -1,6 +1,6 @@
 # SpotFlow
-- [개발 환경](#-wrench-개발-환경)
-- [프로젝트 소개](#----------)
+- [개발 환경](##-wrench-개발-환경)
+- [프로젝트 소개](##-loudspeaker-프로젝트-소개)
 - [프로젝트 주요 기능](#-------------)
 - [팀원](#-stars----)
 - [개발 기간](#-stars-------)
@@ -43,3 +43,4 @@
   <img src="https://img.shields.io/badge/amazonec2-FF9900?style=flat&logo=AWS&logoColor=white" />
   <img src="https://img.shields.io/badge/apachetomcat-F8DC75?style=flat&logo=Tomcat&logoColor=white" />
 
+## :loudspeaker: 프로젝트 소개

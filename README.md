@@ -4,7 +4,6 @@
 - [프로젝트 주요 기능](#-------------)
 - [팀원](#-stars----)
 - [개발 기간](#-stars-------)
-- [빌드](#-stars----)
 
 ## :wrench: 개발 환경
 <b>Frontend</b>
@@ -53,6 +52,12 @@ SpotFlow는 서울의 대중적 곳의 사진 및 정보등을 손쉽게 얻고 
 - Socket IO 를 활용한 채팅
 - Following Follower 을 활용한 친구 관리
 
-## :busts_in_silhouette: 프로젝트 주요기능
+## :busts_in_silhouette: 팀원
 - 허식 (https://github.com/tromxx)
 - 김준혁 (https://github.com/kimchoker)
+- 한정엽 (https://github.com/nanowl)
+- 이성근 (https://github.com/LeeSungGeun7)
+
+## :calendar: 개발 기간
+- 2023.06.23 ~ 2023.08.03
+  

@@ -43,7 +43,7 @@
   <img src="https://img.shields.io/badge/apachetomcat-F8DC75?style=flat&logo=Tomcat&logoColor=white" />
 
 ## :loudspeaker: 프로젝트 소개
-SpotFlow는 서울의 대중적 곳의 사진 및 정보등을 손쉽게 얻고 공유하고 싶어하는 사람들위한 공간입니다. 기존 소셜 미디어 플랫폼은 사진 및 정보를 공유를 지원하지만, 현재 서울에서 사람들이 붐비는 위치를 알기 어려웠습니다.
+SpotFlow는 서울의 대중적 곳의 사진 및 정보등을 손쉽게 얻고 공유하고 싶어하는 사람들위한 공간입니다. 기존 소셜 미디어 플랫폼은 사진과 정보 공유를 지원하지만, 현재 서울에서 사람들이 붐비는 위치를 알기 어려웠습니다.
 
 ## :gear: 프로젝트 주요기능
 - Spring Sercurity, JWT을 활용한 인증
